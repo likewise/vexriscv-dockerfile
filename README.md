@@ -1,8 +1,11 @@
 # vexriscv-dockerfile
-Dockerfile for VexRiscv instantiation and development tools
+Dockerfile to create Docker image for VexRiscv instantiation and development
 
-## Test
+## Docker container
 Ubuntu 18.04 with the required tools to develop with the VexRiscv RISC-V.
+
+### Status
+Can instantiate the Murax SoC, which run hello_world on FPGA, debuggable via GDB/OpenOCD/JTAG.
 
 ### Contents
 SpinalHDL
