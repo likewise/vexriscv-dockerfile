@@ -65,6 +65,9 @@ RUN apt-get install -y pkg-config libtool libyaml-dev libftdi-dev libusb-1.0.0
 RUN git clone https://github.com/SpinalHDL/openocd_riscv && cd openocd_riscv && \
 ./bootstrap && ./configure --prefix=/opt/openocd-riscv && make -j16 install && cd ..
 
+# killall netstat lsusb. default-jdk to build simulation support for verilator (jni.h was missing)
+RUN apt-get install -y psmisc net-tools usbutils default-jdk-headless
+
 # remaining build steps are run as this user; this is also the default user when the image is run.
 USER vexriscv
 WORKDIR /home/vexriscv
