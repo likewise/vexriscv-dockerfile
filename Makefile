@@ -23,3 +23,8 @@ run:
 monitor:
 	docker exec -ti \
 	vexriscv sudo /opt/openocd-riscv/bin/openocd -f interface/ftdi/dp_busblaster.cfg -c "set MURAX_CPU0_YAML vexriscv/cpu0.yaml" -f target/murax.cfg
+
+export:
+#	HASH=`docker run --detach vexriscv /bin/true` && docker export $$HASH | tar tv
+#	HASH=`docker run --detach vexriscv /bin/true` && docker export $$HASH > vexriscv.tar
+	HASH=`docker run --detach vexriscv /bin/true` && docker export $$HASH | xz -T0 > vexriscv.tar.xz

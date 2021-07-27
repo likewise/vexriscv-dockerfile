@@ -68,9 +68,18 @@ RUN git clone https://github.com/SpinalHDL/openocd_riscv && cd openocd_riscv && 
 # killall netstat lsusb. default-jdk to build simulation support for verilator (jni.h was missing)
 RUN apt-get install -y psmisc net-tools usbutils default-jdk-headless
 
+RUN curl --output - https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-20171231-x86_64-linux-centos6.tar.gz | tar xz -C /opt
+
 # remaining build steps are run as this user; this is also the default user when the image is run.
 USER vexriscv
 WORKDIR /home/vexriscv
+
+# download vexriscv and instantiate to download the dependencies
+# the SBT cache at ~/.ivy2 will be populated
+RUN git clone https://github.com/SpinalHDL/VexRiscv.git vexriscv && \
+cd vexriscv && \
+sbt "runMain vexriscv.demo.VexRiscvAxi4WithIntegratedJtag" && \
+cd ~/ && rm -rf vexriscv
 
 #RUN git clone git@github.com:SpinalHDL/VexRiscv.git vexriscv
 #RUN git clone https://github.com/SpinalHDL/VexRiscv.git vexriscv && \
