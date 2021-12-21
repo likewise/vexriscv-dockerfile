@@ -70,6 +70,9 @@ RUN apt-get install -y psmisc net-tools usbutils default-jdk-headless
 
 RUN curl --output - https://static.dev.sifive.com/dev-tools/riscv64-unknown-elf-gcc-20171231-x86_64-linux-centos6.tar.gz | tar xz -C /opt
 
+# to support Java widget for sbt "test:runMain vexriscv.MuraxSim"
+RUN apt-get update && apt-get install -y openjdk-11-jdk
+
 # remaining build steps are run as this user; this is also the default user when the image is run.
 USER vexriscv
 WORKDIR /home/vexriscv
