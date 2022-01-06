@@ -70,8 +70,17 @@ remote:
 	-e XAUTHORITY=/tmp/.Xauthority \
 	-v $${X11TMPDIR}/socket:/tmp/.X11-unix \
 	-v $${X11TMPDIR}/Xauthority:/tmp/.Xauthority \
-	--device=/dev/bus \
+        --device-cgroup-rule 'c 188:* rmw' \
+        --device-cgroup-rule 'c 189:* rmw' \
+        -v /dev/ttyUSB0:/dev/ttyUSB0:rw \
+        -v /dev/ttyUSB1:/dev/ttyUSB1:rw \
+        -v /dev/ttyUSB2:/dev/ttyUSB2:rw \
+        -v /dev/ttyUSB3:/dev/ttyUSB3:rw \
+        -v /dev:/dev:rw \
 	-v $$PWD:/home/vexriscv/project -w /home/vexriscv/project \
 	vexriscv:latest
 
 	rm -rf $${X11TMPDIR}
+
+#	--device=/dev/bus \
+
