@@ -90,6 +90,9 @@ RUN curl -L --output - https://github.com/lowRISC/lowrisc-toolchains/releases/do
 RUN apt-get update && apt-get upgrade -y && apt-get update && apt-get install -y \
   srecord
 
+WORKDIR /
+RUN cd openocd_riscv && ./configure --prefix=/opt/openocd-riscv --enable-xlnx-pcie-xvc && make -j16 install
+
 # remaining build steps are run as this user; this is also the default user when the image is run.
 USER vexriscv
 WORKDIR /home/vexriscv
