@@ -93,6 +93,10 @@ RUN apt-get update && apt-get upgrade -y && apt-get update && apt-get install -y
 WORKDIR /
 RUN cd openocd_riscv && ./configure --prefix=/opt/openocd-riscv --enable-xlnx-pcie-xvc && make -j16 install
 
+# LiteX
+RUN apt-get update && apt-get upgrade -y && apt-get update && apt-get install -y \
+  python3-setuptools libevent-dev libjson-c-dev verilator
+
 # remaining build steps are run as this user; this is also the default user when the image is run.
 USER vexriscv
 WORKDIR /home/vexriscv
@@ -103,6 +107,20 @@ RUN git clone https://github.com/SpinalHDL/VexRiscv.git vexriscv && \
 cd vexriscv && \
 sbt "runMain vexriscv.demo.VexRiscvAxi4WithIntegratedJtag" && \
 cd ~/ && rm -rf vexriscv
+
+# LiteX user install
+RUN mkdir litex && cd litex && curl --output litex_setup.py https://raw.githubusercontent.com/enjoy-digital/litex/master/litex_setup.py && chmod +x litex_setup.py && \
+  ./litex_setup.py --init --install --user --config=full
+
+USER root
+WORKDIR /
+
+RUN cd openocd_riscv && git pull && \
+./bootstrap && ./configure --prefix=/opt/openocd-riscv --enable-xlnx-pcie-xvc --enable-dummy && make -j16 install && cd ..
+
+
+USER vexriscv
+WORKDIR /home/vexriscv
 
 #RUN git clone git@github.com:SpinalHDL/VexRiscv.git vexriscv
 #RUN git clone https://github.com/SpinalHDL/VexRiscv.git vexriscv && \
