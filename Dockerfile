@@ -28,7 +28,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get update && apt-get install -y
 RUN apt-get update && apt-get upgrade -y && apt-get update && apt-get install -y \
   scala build-essential git make autoconf g++ flex bison
 
-RUN git clone http://git.veripool.org/git/verilator && cd verilator && git checkout v4.040 && \
+RUN git clone http://git.veripool.org/git/verilator && cd verilator && git checkout v4.100 && \
   autoconf && ./configure && make install
 
 RUN apt-get update && apt-get upgrade -y && apt-get update && apt-get install -y \
@@ -109,8 +109,8 @@ sbt "runMain vexriscv.demo.VexRiscvAxi4WithIntegratedJtag" && \
 cd ~/ && rm -rf vexriscv
 
 # LiteX user install
-RUN mkdir litex && cd litex && curl --output litex_setup.py https://raw.githubusercontent.com/enjoy-digital/litex/master/litex_setup.py && chmod +x litex_setup.py && \
-  ./litex_setup.py --init --install --user --config=full
+#RUN mkdir litex && cd litex && curl --output litex_setup.py https://raw.githubusercontent.com/enjoy-digital/litex/master/litex_setup.py && chmod +x litex_setup.py && \
+#  ./litex_setup.py --init --install --user --config=full
 
 USER root
 WORKDIR /
@@ -118,6 +118,19 @@ WORKDIR /
 RUN cd openocd_riscv && git pull && \
 ./bootstrap && ./configure --prefix=/opt/openocd-riscv --enable-xlnx-pcie-xvc --enable-dummy && make -j16 install && cd ..
 
+# Yosys, netlistsvg (depends on npm) to generate RTL netlist images
+RUN apt-get update && apt-get upgrade -y && apt-get update && apt-get install -y \
+  npm yosys
+RUN npm install -g netlistsvg
+
+RUN apt-get update && apt-get upgrade -y && apt-get update && apt-get install -y \
+  gtkwave
+
+RUN apt-get update && apt-get upgrade -y && apt-get update && apt-get install -y \
+  python3 python3-pip iverilog gtkwave
+RUN pip3 install cocotb cocotb-bus cocotb-test cocotbext-axi cocotbext-eth cocotbext-pcie pytest scapy tox pytest-xdist pytest-sugar
+
+RUN cd /opt && ln -snf riscv64-unknown-elf-gcc-20171231-x86_64-linux-centos6 riscv
 
 USER vexriscv
 WORKDIR /home/vexriscv
