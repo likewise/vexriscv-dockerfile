@@ -132,8 +132,25 @@ RUN pip3 install cocotb cocotb-bus cocotb-test cocotbext-axi cocotbext-eth cocot
 
 RUN cd /opt && ln -snf riscv64-unknown-elf-gcc-20171231-x86_64-linux-centos6 riscv
 
+RUN apt-get update && apt-get upgrade -y && apt-get update && apt-get install -y \
+  bsdmainutils telnet
+
+# Symbiyosys symbiyosys-build
+RUN apt-get update && apt-get upgrade -y && apt-get update && apt-get install -y \
+  build-essential clang bison flex libreadline-dev \
+  gawk tcl-dev libffi-dev git mercurial graphviz   \
+  xdot pkg-config python python3 libftdi-dev gperf \
+  libboost-program-options-dev autoconf libgmp-dev \
+  cmake python-dev python3-dev
+
 USER vexriscv
 WORKDIR /home/vexriscv
+
+RUN git clone --recursive https://github.com/likewise/symbiyosys-build.git
+
+COPY build-symbiyosys.sh /home/vexriscv/symbiyosys-build/
+RUN cd symbiyosys-build && ./build-symbiyosys.sh
+
 
 #RUN git clone git@github.com:SpinalHDL/VexRiscv.git vexriscv
 #RUN git clone https://github.com/SpinalHDL/VexRiscv.git vexriscv && \
