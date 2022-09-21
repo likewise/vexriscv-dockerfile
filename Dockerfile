@@ -151,6 +151,18 @@ RUN git clone --recursive https://github.com/likewise/symbiyosys-build.git
 COPY build-symbiyosys.sh /home/vexriscv/symbiyosys-build/
 RUN cd symbiyosys-build && ./build-symbiyosys.sh
 
+USER root
+WORKDIR /
+
+RUN echo "export PATH=/home/vexriscv/opt/formal/bin:$PATH" >> /etc/bash.bashrc
+
+USER vexriscv
+WORKDIR /home/vexriscv
+
+ENV COLORTERM="truecolor"
+ENV TERM="xterm-256color"
+
+
 
 #RUN git clone git@github.com:SpinalHDL/VexRiscv.git vexriscv
 #RUN git clone https://github.com/SpinalHDL/VexRiscv.git vexriscv && \
