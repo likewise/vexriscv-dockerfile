@@ -156,13 +156,35 @@ WORKDIR /
 
 RUN echo "export PATH=/home/vexriscv/opt/formal/bin:$PATH" >> /etc/bash.bashrc
 
+RUN apt-get update && apt-get upgrade -y && apt-get update && apt-get install -y \
+inotify-tools gconf2
+
+# https://github.com/five-embeddev/riscv-scratchpad/blob/master/cmake/cmake/riscv.cmake
+# https://keithp.com/picolibc/
+# https://crosstool-ng.github.io/docs/build/
+# For crosstool-ng
+#RUN apt-get update && apt-get upgrade -y && apt-get update && apt-get install -y \
+#unzip help2man libtool-bin libncurses5-dev
+#./configure --prefix=/home/vexriscv/project/crosstool-ng/ct-ng
+#curl http://crosstool-ng.org/download/crosstool-ng/crosstool-ng-1.25.0.tar.xz --output crosstool-ng-1.25.0.tar.xz
+
+# ct-ng riscv32-unknown-elf
+
+
 USER vexriscv
 WORKDIR /home/vexriscv
 
+# https://stackoverflow.com/questions/28258436/prefetch-sbt-versions-scala-and-ivy-resources-with-sbt-for-creating-an-image
+# Here is what I do in my Dockerfile to prefetch multiple scala versions :
+
+RUN mkdir scala && cd scala && echo 'crossScalaVersions := Seq("2.11.12", "2.12.15")' > build.sbt \
+    && echo 'object Hi { def main(args: Array[String]) = println("Done") }' > src.scala \
+    && sbt "+run" \
+    && rm build.sbt src.scala
+
+
 ENV COLORTERM="truecolor"
 ENV TERM="xterm-256color"
-
-
 
 #RUN git clone git@github.com:SpinalHDL/VexRiscv.git vexriscv
 #RUN git clone https://github.com/SpinalHDL/VexRiscv.git vexriscv && \
